@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0a0f1c;
+  --color-foreground: #c8d6e5;
+  --color-foreground-muted: #4a5568;
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Subtle grid overlay */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    linear-gradient(to right, rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Hide Next.js dev indicator */
+[data-next-badge] { display: none !important; }
+next-dev-overlay { display: none !important; }
+
+/* Activation prompt pulse */
+@keyframes prompt-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.5; }
+}
