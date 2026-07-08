@@ -12,18 +12,15 @@ you play, not just something you watch.
 
 Built with Next.js 16 · TypeScript · Canvas 2D — zero external UI dependencies.
 
+### [**Live demo →**](https://stadiumos-cmok.vercel.app/)
+
 </div>
 
 <br/>
 
 <div align="center">
 
-<!-- Drop your demo GIF here — 900–1200px wide, 15–25s, shows agent movement,
-     a toggle being clicked, and a challenge completing. Recommended tool: Kap / ScreenToGif. -->
-
 <img src="./docs/demo.gif" alt="StadiumOS demo — live crowd simulation with heatmap, flow trails, and a scenario challenge in progress" width="720"/>
-
-<sub>↑ Replace <code>docs/demo.gif</code> with a real capture before sharing this repo.</sub>
 
 </div>
 
@@ -72,6 +69,10 @@ piece designed to be swapped out — see [Extending with real data](#extending-w
 ---
 
 ## Quickstart
+
+**Try it live:** [stadiumos-cmok.vercel.app](https://stadiumos-cmok.vercel.app/) — no install required.
+
+To run it locally instead:
 
 ```bash
 npm install
@@ -197,4 +198,6 @@ exactly as-is; they only consume the `Agent[]` / `MetricSnapshot` shapes in
 
 ## License
 
-MIT — do whatever you want with it.
+MIT — see [`LICENSE`](./LICENSE). In short: free to use, modify, and
+distribute, including commercially, as long as the copyright notice is kept;
+provided as-is with no warranty.
