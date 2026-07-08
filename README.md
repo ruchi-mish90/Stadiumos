@@ -23,7 +23,6 @@ Built with Next.js 16 · TypeScript · Canvas 2D — zero external UI dependenci
 
 <img src="./docs/demo.gif" alt="StadiumOS demo — live crowd simulation with heatmap, flow trails, and a scenario challenge in progress" width="720"/>
 
-<sub>↑ Replace <code>docs/demo.gif</code> with a real capture before sharing this repo.</sub>
 
 </div>
 
