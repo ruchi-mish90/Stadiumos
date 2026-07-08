@@ -1,0 +1,724 @@
+/* ---------------------------------------------------------------------
+   StadiumOS — design tokens
+   A tactical control-room read on a stadium ops dashboard: dark console,
+   monospace HUD numerals, amber/cyan functional accents (not a single
+   neon-on-black accent — amber means "attention", cyan means "flowing
+   normally"), radar-sweep signature motif on the stadium canvas itself.
+--------------------------------------------------------------------- */
+
+:root {
+  --bg: #0a0e0f;
+  --bg-panel: #10171a;
+  --bg-panel-alt: #141d20;
+  --line: #1c262a;
+  --line-strong: #26343a;
+  --text: #e8f0f0;
+  --text-dim: #6b8288;
+  --cyan: #4fd8e0;
+  --amber: #ffb020;
+  --red: #ff4d4d;
+  --green: #5fd97a;
+  --purple: #c792ea;
+
+  --font-mono: ui-monospace, "SFMono-Regular", "IBM Plex Mono", Menlo, Consolas, monospace;
+  --font-display: ui-sans-serif, "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient scanline texture — subtle, never distracting. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.012) 0px,
+    rgba(255, 255, 255, 0.012) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+button {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Layout shell
+--------------------------------------------------------------------- */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.dashboard__main {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+
+.dashboard__side {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------------
+   Control bar
+--------------------------------------------------------------------- */
+
+.control-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-panel);
+  flex-wrap: wrap;
+}
+
+.control-bar__brand-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.control-bar__brand-mark span {
+  color: var(--cyan);
+}
+
+.control-bar__group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.control-bar__group--end {
+  margin-left: auto;
+}
+
+.control-bar__group-label {
+  color: var(--text-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 2px;
+}
+
+.control-bar__speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.control-bar__speed input[type="range"] {
+  accent-color: var(--cyan);
+  width: 110px;
+}
+
+.btn {
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--cyan);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.btn--primary {
+  background: rgba(79, 216, 224, 0.12);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--ghost {
+  background: transparent;
+}
+
+.btn--danger {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(255, 77, 77, 0.08);
+}
+
+.btn--danger:hover {
+  background: rgba(255, 77, 77, 0.18);
+}
+
+.btn--chip {
+  padding: 5px 10px;
+  color: var(--text-dim);
+}
+
+.btn--chip-active {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: rgba(255, 176, 32, 0.1);
+}
+
+/* ---------------------------------------------------------------------
+   Stadium canvas grid
+--------------------------------------------------------------------- */
+
+.stadium-grid {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.stadium-grid--1 {
+  grid-template-columns: 1fr;
+}
+
+.stadium-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.stadium-grid--3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.stadium-grid--4 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.stadium-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.stadium-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stadium-panel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stadium-panel__label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.stadium-panel__occupancy {
+  margin-left: auto;
+  color: var(--text-dim);
+}
+
+.stadium-panel__canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.stadium-panel__canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.zone-tooltip {
+  position: absolute;
+  background: rgba(10, 14, 15, 0.92);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.zone-tooltip strong {
+  color: var(--text);
+}
+
+.zone-tooltip span {
+  color: var(--text-dim);
+}
+
+/* ---------------------------------------------------------------------
+   Metrics panel
+--------------------------------------------------------------------- */
+
+.metrics-panel,
+.challenge-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.metrics-panel__section + .metrics-panel__section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.metrics-panel h3,
+.challenge-panel h3 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.gauge {
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin: 0 auto;
+}
+
+.gauge__track {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 7;
+}
+
+.gauge__value {
+  fill: var(--text);
+  font-size: 20px;
+  font-family: var(--font-mono);
+}
+
+.gauge__label {
+  fill: var(--text-dim);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metrics-panel__stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.metrics-panel__stat-value {
+  display: block;
+  font-size: 20px;
+  color: var(--cyan);
+}
+
+.metrics-panel__stat-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sparkline {
+  width: 100%;
+  height: 46px;
+  display: block;
+}
+
+.zone-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.zone-list__row {
+  display: grid;
+  grid-template-columns: 1fr 70px 32px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.zone-list__label {
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zone-list__bar {
+  height: 5px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.zone-list__bar-fill {
+  height: 100%;
+}
+
+.zone-list__pct {
+  text-align: right;
+  color: var(--text-dim);
+}
+
+.zone-list__empty {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.comparison-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comparison-list__row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.comparison-list__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.comparison-list__label {
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------------
+   Challenge panel
+--------------------------------------------------------------------- */
+
+.challenge-panel {
+  flex-shrink: 0;
+}
+
+.challenge-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.challenge-card {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 10px;
+  background: var(--bg-panel-alt);
+}
+
+.challenge-card--active {
+  border-color: var(--amber);
+}
+
+.challenge-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.challenge-card__title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.challenge-card__briefing {
+  margin: 0 0 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.challenge-card__progress-track {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.challenge-card__progress-fill {
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.2s ease;
+}
+
+.challenge-card__progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.challenge-card__detail {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.stars__on {
+  color: var(--amber);
+}
+
+.stars__off {
+  color: var(--line-strong);
+}
+
+.achievement-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.achievement {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  opacity: 0.5;
+}
+
+.achievement--unlocked {
+  opacity: 1;
+}
+
+.achievement__badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+}
+
+.achievement--unlocked .achievement__badge {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.achievement__title {
+  display: block;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.achievement__desc {
+  display: block;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.result-toast {
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.result-toast p {
+  margin: 4px 0;
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.result-toast--success {
+  border-color: var(--green);
+}
+
+.result-toast--fail {
+  border-color: var(--red);
+}
+
+/* ---------------------------------------------------------------------
+   Event ticker
+--------------------------------------------------------------------- */
+
+.event-ticker {
+  flex-shrink: 0;
+  height: 34px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-panel);
+  overflow-x: auto;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.event-ticker ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 24px;
+  white-space: nowrap;
+}
+
+.event-ticker__item {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.event-ticker__time {
+  color: var(--text-dim);
+}
+
+.event-ticker__reality {
+  color: var(--text);
+}
+
+.event-ticker__item--warn {
+  color: var(--amber);
+}
+
+.event-ticker__item--danger {
+  color: var(--red);
+}
+
+.event-ticker__empty {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+/* ---------------------------------------------------------------------
+   Crash panel
+--------------------------------------------------------------------- */
+
+.crash-panel {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+}
+
+.crash-panel__code {
+  font-family: var(--font-mono);
+  color: var(--red);
+  letter-spacing: 0.1em;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------------
+   Responsive
+--------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .dashboard__main {
+    flex-direction: column;
+  }
+
+  .dashboard__side {
+    width: 100%;
+  }
+
+  .stadium-grid--2,
+  .stadium-grid--3,
+  .stadium-grid--4 {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+}
